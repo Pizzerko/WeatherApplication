@@ -23,11 +23,11 @@ app.get("/hourlyCurrent", (req, res) => {
         const latitude = data.results[0].latitude
         const longitude = data.results[0].longitude
         const name = data.results[0].name
-        const hourlyCurrentUrl  = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code,wind_speed_10m&hourly=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&forecast_days=1`;
+        const hourlyCurrentUrl  = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code,wind_speed_10m&hourly=temperature_2m,precipitation_probability,weather_code&daily=temperature_2m_max,temperature_2m_min,sunrise,sunset&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&forecast_days=1`;
         fetch(hourlyCurrentUrl)
         .then(response => {
             if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.json();
         })
@@ -60,7 +60,7 @@ app.get("/sevenDay", (req, res) => {
         fetch(SevenDayUrl)
         .then(response => {
         if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+            throw new Error(`HTTP error! status: ${response.status}`)
         }
         return response.json();
         })

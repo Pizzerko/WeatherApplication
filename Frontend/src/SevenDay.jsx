@@ -2,15 +2,21 @@ import React from 'react'
 
 const SevenDay = ({name, sDayWeather, number}) => {
 
+    function getDay() {
+        const date = new Date(name);
+        const dateArray = ["Sunday","Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+        return dateArray[date.getUTCDay()]
+    }
+
     return (
     <div className="flex-col border-4 border-teal-100 p-2 px-4 gap-2">
             <div className="flex justify-center underline underline-offset-1 text-4xl">
-                {name.substring(5)}
+                {getDay()}
             </div>
             <div className="flex justify-center text-6xl">
                 {weatherImage(sDayWeather, number)}
             </div>
-            <div className="text-4xl ">
+            <div className="flex text-4xl justify-center">
                 {Math.round(sDayWeather.daily.temperature_2m_min[number])}{sDayWeather.daily_units.temperature_2m_min}/{Math.round(sDayWeather.daily.temperature_2m_max[number])}{sDayWeather.daily_units.temperature_2m_min}
             </div>       
     </div>

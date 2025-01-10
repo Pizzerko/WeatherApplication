@@ -26,7 +26,7 @@ const Search = () => {
     }
     useEffect(() => {
         getWeather();
-    }, []); // if variables in brackets get changed, the function in useEffect is ran /// if empty brackets, useEffect is ran when the page gets rendered
+    }, [locationSearched]); // if variables in brackets get changed, the function in useEffect is ran /// if empty brackets, useEffect is ran when the page gets rendered
 
     const [sevenDayWeather, setSevenDayWeather] = useState({})
 
@@ -48,16 +48,41 @@ const Search = () => {
 
     useEffect(() => {
       getSevenDays();
-      console.log(sevenDayWeather)
-    }, [sevenDayWeather]);
+    }, [locationSearched]);
+
+    const [temperatureArr, setTemperatureArr] = useState(0)
+
+    function loadHours(weather) {
+      if(weather && weather.hourly) {
+        let number = getHours(weather);
+        let tempArr = weather.hourly.temperature_2m.slice(number);
+        return tempArr;
+      }
+    }
+
+    useEffect(() => {
+      if(weather && weather.hourly) {
+        setTemperatureArr(loadHours(weather));
+      }
+    }, [weather])
+
+    function convertToStandardTime(starting, index) {
+      let milHour = starting + index;
+      const period = milHour >= 12 ? "PM" : "AM" // Determines AM or PM
+      const standardTime = milHour % 12 || 12;
+      if(index == 0) {
+        return "Now"
+      }
+      return `${standardTime} ${period}`
+    }
 
   return (
     <div>
       {weather && weather.daily && sevenDayWeather && sevenDayWeather.daily && 
       <div>
         <div className="text-7xl m-4 p-2">
-          <div className="flex gap-10 my-5 p-2 w-fit border-x-4 border-y-2 text-sky-500 rounded-lg border-teal-100">
-            {weather.location_name}{weatherImage(weather)}
+          <div className="flex gap-4 my-5 p-2 w-fit border-x-4 border-y-2 text-sky-500 rounded-lg border-teal-100">
+            {weather.location_name}{hourlyWeatherImage(weather, 24-temperatureArr.length, 24-temperatureArr.length)}
           </div>
           <div className=' p-2 my-4 underline decoration-cyan-100 underline-offset-8'>
             {Math.round(weather.current.temperature_2m)}{weather.daily_units.temperature_2m_min}
@@ -72,8 +97,14 @@ const Search = () => {
           <SevenDay name={sevenDayWeather.daily.time[5]} sDayWeather={sevenDayWeather} number={5} />
           <SevenDay name={sevenDayWeather.daily.time[6]} sDayWeather={sevenDayWeather} number={6} />
         </div>
-        <div className="flex ">
-
+        <div className='flex text-6xl m-6'>Hourly Forecast</div>
+        <div className="flex flex-col border-x-8 border-y-4 gap-4 p-2 mx-20 text-3xl border-sky-100">
+          {temperatureArr &&
+          temperatureArr.map((temp, hour) => (
+            <div className="flex border-2 justify-between border-sky-100 px-4 py-2">
+              <div>{convertToStandardTime(24-temperatureArr.length,hour)}</div> <div>{hourlyWeatherImage(weather, 24-temperatureArr.length + hour, 24-temperatureArr.length + hour)}</div> <div className='flex'>{weather.hourly.precipitation_probability[24-temperatureArr.length + hour]}%<div className="flex flex-col text-xl justify-center">💧</div></div> <div>{Math.floor(temp)}{weather.daily_units.temperature_2m_min}</div>
+            </div>
+          ))}
         </div>
       </div>
       }
@@ -81,9 +112,16 @@ const Search = () => {
   )
 }
 
-
-function weatherImage(weather) {
-  let weatherCode = weather.current.weather_code
+function hourlyWeatherImage(weather, index, milHour) {
+  let weatherCode = weather.hourly.weather_code[index];
+  console.log(milHour)
+  let sunriseHour = weather.daily.sunrise[0].substring(11, 13);
+  let sunsetHour = weather.daily.sunset[0].substring(11, 13);
+  if(milHour < sunriseHour || milHour > sunsetHour) {
+    return(
+      <div>🌙</div>
+    )
+  }
   if(weatherCode == 0) {
       return(
           <div>☀️</div>
@@ -116,5 +154,11 @@ function weatherImage(weather) {
   }
 }
 
+function getHours(weather) {
+  if(weather && weather.current) {
+  let time = weather.current.time.substring(11,13);
+  return time;
+  }
+}
 
 export default Search
