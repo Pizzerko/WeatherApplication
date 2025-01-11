@@ -5,8 +5,9 @@ import cors from "cors";
 const app = express();
 app.use(cors());
 
-app.listen(5000, () => {
-    console.log("Server started at http://localhost:5000");
+const PORT = process.env.PORT || 8000
+app.listen(PORT, () => {
+    console.log(`Server started at http://localhost:${PORT}`);
 })
 
 app.get("/hourlyCurrent", (req, res) => {
