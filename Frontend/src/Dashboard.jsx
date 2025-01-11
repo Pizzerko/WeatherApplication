@@ -10,7 +10,7 @@ const Dashboard = () => {
       </div>
       <div className="flex w-full justify-around my-10">
       <Weather name="New York" />
-      <Weather name="China" />
+      <Weather name="Beijing" />
       <Weather name="Japan" />
       <Weather name="Germany" />
       </div>

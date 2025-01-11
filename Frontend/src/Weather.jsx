@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 
 const Weather = ({name}) => {
 
     const [weather, setWeather] = useState({});
-
+    const navigate = useNavigate();
     function getWeather() {
         //API call to get weather data of the four countries
         fetch(`https://familiar-mariam-pizzko-8d766642.koyeb.app/hourlyCurrent?location=${name}`)
@@ -24,8 +25,13 @@ const Weather = ({name}) => {
         getWeather();
     }, []); // if variables in brackets get changed, the function in useEffect is ran /// if empty brackets, useEffect is ran when the page gets rendered
 
+    function handleClick() {
+        navigate(`/weather/?location=${name}`)
+      }
+
     return (
         <div>
+            <button onClick={handleClick}>
             <div className="flex text-4xl border-4 border-teal-100 p-2 px-4 gap-2">
                 <div>
                     {name}
@@ -39,6 +45,7 @@ const Weather = ({name}) => {
                 </div>
                 }
             </div>
+            </button>
         </div>
     )
 }
