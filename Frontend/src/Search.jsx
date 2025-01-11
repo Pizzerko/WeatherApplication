@@ -10,7 +10,7 @@ const Search = () => {
   
     function getWeather() {
         //API call to get weather data of the four countries
-        fetch(`https://familiar-mariam-pizzko-8d766642.koyeb.app/hourlyCurrent?location=${locationSearched}`)
+        fetch(`familiar-mariam-pizzko-8d766642.koyeb.app/hourlyCurrent?location=${locationSearched}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`)
@@ -31,7 +31,7 @@ const Search = () => {
     const [sevenDayWeather, setSevenDayWeather] = useState({})
 
     function getSevenDays() {
-      fetch(`https://familiar-mariam-pizzko-8d766642.koyeb.app/sevenDay?location=${locationSearched}`)
+      fetch(`familiar-mariam-pizzko-8d766642.koyeb.app/sevenDay?location=${locationSearched}`)
       .then(response => {
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`)
@@ -50,12 +50,13 @@ const Search = () => {
       getSevenDays();
     }, [locationSearched]);
 
-    const [temperatureArr, setTemperatureArr] = useState(0)
+    const [temperatureArr, setTemperatureArr] = useState(0);
+    const [startingTime, setStartingTime] = useState(0);
 
     function loadHours(weather) {
       if(weather && weather.hourly) {
-        let number = getHours(weather);
-        let tempArr = weather.hourly.temperature_2m.slice(number);
+        let number = parseInt(getHours(weather), 10);
+        let tempArr = weather.hourly.temperature_2m.slice(number, number + 18);
         return tempArr;
       }
     }
@@ -63,18 +64,26 @@ const Search = () => {
     useEffect(() => {
       if(weather && weather.hourly) {
         setTemperatureArr(loadHours(weather));
+        setStartingTime(getHours(weather));
       }
     }, [weather])
 
     function convertToStandardTime(starting, index) {
-      let milHour = starting + index;
-      const period = milHour >= 12 ? "PM" : "AM" // Determines AM or PM
+      console.log(starting + "-" + index)
+      let milHour = parseInt(starting, 10) + parseInt(index, 10);
+      let period = "PM"
+      if(Math.floor(milHour / 12) == 0 || Math.floor((milHour / 12)) % 2 == 0) {
+        period = "AM"
+      }
+       // Determines AM or PM
       const standardTime = milHour % 12 || 12;
       if(index == 0) {
         return "Now"
       }
       return `${standardTime} ${period}`
     }
+
+
 
   return (
     <div>
@@ -102,7 +111,7 @@ const Search = () => {
           {temperatureArr &&
           temperatureArr.map((temp, hour) => (
             <div className="flex border-2 justify-between border-sky-100 px-4 py-2">
-              <div>{convertToStandardTime(24-temperatureArr.length,hour)}</div> <div>{hourlyWeatherImage(weather, 24-temperatureArr.length + hour, 24-temperatureArr.length + hour)}</div> <div className='flex'>{weather.hourly.precipitation_probability[24-temperatureArr.length + hour]}%<div className="flex flex-col text-xl justify-center">💧</div></div> <div>{Math.floor(temp)}{weather.daily_units.temperature_2m_min}</div>
+              <div>{convertToStandardTime(startingTime,hour)}</div> <div>{hourlyWeatherImage(weather, parseInt(startingTime,10) + parseInt(hour, 10), (parseInt(startingTime,10) + hour) % 24)}</div> <div className='flex'>{weather.hourly.precipitation_probability[24-temperatureArr.length + hour]}%<div className="flex flex-col text-xl justify-center">💧</div></div> <div>{Math.floor(temp)}{weather.daily_units.temperature_2m_min}</div>
             </div>
           ))}
         </div>
@@ -113,44 +122,50 @@ const Search = () => {
 }
 
 function hourlyWeatherImage(weather, index, milHour) {
-  let weatherCode = weather.hourly.weather_code[index];
-  console.log(milHour)
-  let sunriseHour = weather.daily.sunrise[0].substring(11, 13);
-  let sunsetHour = weather.daily.sunset[0].substring(11, 13);
-  if(milHour < sunriseHour || milHour > sunsetHour) {
-    return(
-      <div>🌙</div>
-    )
-  }
-  if(weatherCode == 0) {
+  if(weather && weather.hourly && weather.daily) {
+    let weatherCode = weather.hourly.weather_code[index];
+    console.log(index)
+    let sunriseHour = weather.daily.sunrise[0].substring(11, 13);
+    let sunsetHour = weather.daily.sunset[0].substring(11, 13);
+    if(index / 24 >= 1) {
+      sunriseHour = weather.daily.sunrise[1].substring(11, 13);
+      sunsetHour = weather.daily.sunset[1].substring(11, 13);
+    }
+    if(milHour < sunriseHour || milHour > sunsetHour) {
       return(
-          <div>☀️</div>
+        <div>🌙</div>
       )
-  }
-  if(weatherCode >= 45 && weatherCode <= 48) {
-    return (
-        <div>🌁</div>
-    )
-  }
-  if(weatherCode > 0 && weatherCode <= 3) {
+    }
+    if(weatherCode == 0) {
+        return(
+            <div>☀️</div>
+        )
+    }
+    if(weatherCode >= 45 && weatherCode <= 48) {
       return (
-          <div>☁️</div>
+          <div>🌁</div>
       )
-  }
-  if((weatherCode >= 51 && weatherCode <= 67) || (weatherCode >= 80 && weatherCode <= 99)) {
-      return (
-          <div>🌧️</div>
-      )
-  }
-  if(weatherCode >= 71 && weatherCode <= 77) {
-      return (
-          <div>🌨️</div>
-      )
-  }
-  if(weatherCode >= 95 && weatherCode <= 99) {
-      return(
-          <div>⛈️</div>
-      )
+    }
+    if(weatherCode > 0 && weatherCode <= 3) {
+        return (
+            <div>☁️</div>
+        )
+    }
+    if((weatherCode >= 51 && weatherCode <= 67) || (weatherCode >= 80 && weatherCode <= 99)) {
+        return (
+            <div>🌧️</div>
+        )
+    }
+    if(weatherCode >= 71 && weatherCode <= 77) {
+        return (
+            <div>🌨️</div>
+        )
+    }
+    if(weatherCode >= 95 && weatherCode <= 99) {
+        return(
+            <div>⛈️</div>
+        )
+    }
   }
 }
 
