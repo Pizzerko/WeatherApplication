@@ -91,7 +91,7 @@ const Search = () => {
       <div>
         <div className="text-7xl m-4 p-2">
           <div className="flex gap-4 my-5 p-2 w-fit border-x-4 border-y-2 text-sky-500 rounded-lg border-teal-100">
-            {weather.location_name}{hourlyWeatherImage(weather, 24-temperatureArr.length, 24-temperatureArr.length)}
+            {weather.location_name}{hourlyWeatherImage(weather, parseInt(startingTime,10), parseInt(startingTime,10) % 24)}
           </div>
           <div className=' p-2 my-4 underline decoration-cyan-100 underline-offset-8'>
             {Math.round(weather.current.temperature_2m)}{weather.daily_units.temperature_2m_min}
