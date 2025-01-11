@@ -10,7 +10,7 @@ const Search = () => {
   
     function getWeather() {
         //API call to get weather data of the four countries
-        fetch(`familiar-mariam-pizzko-8d766642.koyeb.app/hourlyCurrent?location=${locationSearched}`)
+        fetch(`http://familiar-mariam-pizzko-8d766642.koyeb.app/hourlyCurrent?location=${locationSearched}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`)
@@ -31,7 +31,7 @@ const Search = () => {
     const [sevenDayWeather, setSevenDayWeather] = useState({})
 
     function getSevenDays() {
-      fetch(`familiar-mariam-pizzko-8d766642.koyeb.app/sevenDay?location=${locationSearched}`)
+      fetch(`http://familiar-mariam-pizzko-8d766642.koyeb.app/sevenDay?location=${locationSearched}`)
       .then(response => {
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`)
