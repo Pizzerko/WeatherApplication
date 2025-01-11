@@ -6,7 +6,7 @@ const Weather = ({name}) => {
 
     function getWeather() {
         //API call to get weather data of the four countries
-        fetch(`http://localhost:5000/hourlyCurrent?location=${name}`)
+        fetch(`http://localhost:8000/hourlyCurrent?location=${name}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`)

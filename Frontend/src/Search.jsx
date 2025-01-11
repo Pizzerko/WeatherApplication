@@ -10,7 +10,7 @@ const Search = () => {
   
     function getWeather() {
         //API call to get weather data of the four countries
-        fetch(`http://localhost:5000/hourlyCurrent?location=${locationSearched}`)
+        fetch(`http://localhost:8000/hourlyCurrent?location=${locationSearched}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`)
@@ -31,7 +31,7 @@ const Search = () => {
     const [sevenDayWeather, setSevenDayWeather] = useState({})
 
     function getSevenDays() {
-      fetch(`http://localhost:5000/sevenDay?location=${locationSearched}`)
+      fetch(`http://localhost:8000/sevenDay?location=${locationSearched}`)
       .then(response => {
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`)
