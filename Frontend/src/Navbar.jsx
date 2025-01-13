@@ -18,10 +18,19 @@ const Navbar = () => {
     setInputValue(event.target.value)
   }
 
+  function handleClick() {
+    navigate(`/`)
+  }
+
   return (
-    <div className='bg-cyan-200'>
-        <div className="flex justify-end">
-                <input type="text" value={inputValue} onChange={handleWeatherChange} onKeyDown={handleKeyDown} placeholder="Search Location" className='border-2 border-gray-275 p-2 rounded-xl m-3'></input>
+    <div className='bg-cyan-200 flex justify-between'>
+        <button onClick={handleClick}>
+          <div className="flex px-6" >
+            <img src="public/weather02-512.webp" width={100} height={100}/>
+          </div>
+        </button>
+        <div className="flex flex-col justify-center">
+                <input type="text" value={inputValue} onChange={handleWeatherChange} onKeyDown={handleKeyDown} placeholder="Search City..." className='border-2 border-gray-275 p-2 rounded-xl m-3'></input>
         </div>
     </div>
   )
