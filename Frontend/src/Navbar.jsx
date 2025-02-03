@@ -26,7 +26,7 @@ const Navbar = () => {
     <div className='bg-cyan-200 flex justify-between'>
         <button onClick={handleClick}>
           <div className="flex px-6" >
-            <img src="/weather-logo.jpg" className="w-[100px] h-[100px]"/>
+            <img src="/weather02-512.webp" className="w-[100px] h-[100px]"/>
           </div>
         </button>
         <div className="flex flex-col justify-center">
